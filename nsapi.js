@@ -104,9 +104,10 @@ module.exports = class NSAPI {
    * @return  {Promise<array>}
    */
 
-  async getAllStations () {
+  async getAllStations (parameters) {
     const data = await this._request( {
       path: '/reisinformatie-api/api/v2/stations',
+      parameters,
     } );
 
     return data.payload;
