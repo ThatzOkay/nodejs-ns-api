@@ -6,8 +6,11 @@ API Docs:   https://apiportal.ns.nl
 License:    Unlicense (Public Domain, see LICENSE file)
 */
 
+import NSAPIInterface from './types/interface';
+import { NSDeparture } from './types/nsDeparture';
+import { NSStation } from './types/nsStation';
 
-export default class NSAPI {
+export default class NSAPI implements NSAPIInterface {
 
   /**
    * Configuration
@@ -50,13 +53,13 @@ export default class NSAPI {
    * @return  {Promise<object>}
    */
 
-  async _request ( { path, parameters }: { path: string, parameters?: any } ) {
-    let url = `https://gateway.apiportal.ns.nl${path}`;
-    const params = new URLSearchParams( parameters );
+  async _request(options: { path: string; parameters?: Record<string, any> }): Promise<any> {
+    let url = `https://gateway.apiportal.ns.nl${options.path}`;
+    const params = new URLSearchParams(options.parameters as any);
 
     url += '?' + params.toString();
 
-    const options = {
+    const requestOptions = {
       method: 'GET',
       signal: AbortSignal.timeout( this._config.timeout ),
       headers: {
@@ -65,7 +68,7 @@ export default class NSAPI {
       },
     };
 
-    const res = await fetch( url, options );
+    const res = await fetch( url, requestOptions );
     const data = await res.json();
     let error;
 
@@ -112,10 +115,10 @@ export default class NSAPI {
    * @return  {Promise<array>}
    */
 
-  async getAllStations (parameters?: any) {
+  async getAllStations(query?: string): Promise<NSStation[]> {
     const data = await this._request( {
       path: '/reisinformatie-api/api/v2/stations',
-      parameters,
+      parameters: { query },
     } );
 
     return data.payload;
@@ -167,14 +170,14 @@ export default class NSAPI {
    * @return  {Promise<array>}
    */
 
-  async getDepartures ( parameters: any ) {
-    if ( parameters.dateTime && ! ( parameters.dateTime instanceof Date ) ) {
-      parameters.dateTime = new Date( parameters.dateTime ).toISOString();
+  async getDepartures(station: string, dateTime: Date | string): Promise<NSDeparture[]> {
+    if (dateTime && !(dateTime instanceof Date)) {
+      dateTime = new Date(dateTime).toISOString();
     }
 
     const data = await this._request( {
       path: '/reisinformatie-api/api/v2/departures',
-      parameters,
+      parameters: { station, dateTime },
     } );
 
     return data.payload.departures;
