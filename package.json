@@ -17,10 +17,10 @@
   "type": "module",
   "main": "./dist/nsapi.umd.js",
   "module": "./dist/nsapi.esm.js",
-  "types": "./dist/nsapi.d.ts",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/nsapi.d.ts",
+      "types": "./dist/index.d.ts",
       "import": "./dist/nsapi.esm.js",
       "require": "./dist/nsapi.umd.js"
     }
