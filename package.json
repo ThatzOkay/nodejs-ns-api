@@ -6,7 +6,7 @@
   },
   "private": false,
   "name": "@thatzokay/ns-api",
-  "version": "4.2.1",
+  "version": "4.2.2",
   "description": "Public transit data from Nederlandse Spoorwegen API",
   "repository": {
     "type": "git",
@@ -18,10 +18,10 @@
   "type": "module",
   "main": "./dist/nsapi.umd.js",
   "module": "./dist/nsapi.es.js",
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/types/src/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
+      "types": "./dist/types/src/index.d.ts",
       "import": "./dist/nsapi.es.js",
       "require": "./dist/nsapi.umd.js"
     }
