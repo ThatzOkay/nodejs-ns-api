@@ -7,7 +7,7 @@ License:    Unlicense (Public Domain, see LICENSE file)
 */
 
 
-module.exports = class NSAPI {
+export default class NSAPI {
 
   /**
    * Configuration
@@ -21,6 +21,9 @@ module.exports = class NSAPI {
     key,
     timeout = 8000,
 
+  }: {
+    key: string,
+    timeout?: number,
   } ) {
 
     this._config = {
@@ -30,6 +33,13 @@ module.exports = class NSAPI {
 
   }
 
+  private _config : {
+    key: string,
+    timeout: number,
+  } = {
+    key: '',
+    timeout: 8000,
+  }
 
   /**
    * Talk to the API
@@ -40,7 +50,7 @@ module.exports = class NSAPI {
    * @return  {Promise<object>}
    */
 
-  async _request ( { path, parameters } ) {
+  async _request ( { path, parameters }: { path: string, parameters?: any } ) {
     let url = `https://gateway.apiportal.ns.nl${path}`;
     const params = new URLSearchParams( parameters );
 
@@ -62,8 +72,7 @@ module.exports = class NSAPI {
     // Normal API error
     if ( data.code && data.message ) {
       error = new Error( `API: ${data.message}` );
-      error.code = data.code;
-      error.reason = data.errors;
+      error.cause = data.errors;
       throw error;
     }
 
@@ -71,7 +80,7 @@ module.exports = class NSAPI {
     /* istanbul ignore next */
     if ( data.fieldErrors && data.fieldErrors.length ) {
       error = new Error( 'API field error' );
-      error.reason = data.fieldErrors;
+      error.cause = data.fieldErrors;
       throw error;
     }
 
@@ -79,15 +88,14 @@ module.exports = class NSAPI {
     /* istanbul ignore next */
     if ( data.errors && data.errors[0] ) {
       error = new Error( 'API error' );
-      error.reason = data.errors;
+      error.cause = data.errors;
       throw error;
     }
 
     // API server error
     if ( res.status >= 300 ) {
       error = new Error( 'API error' );
-      error.statusCode = res.status;
-      error.statusText = res.statusText;
+      error.cause = res.statusText;
       throw error;
     }
 
@@ -104,7 +112,7 @@ module.exports = class NSAPI {
    * @return  {Promise<array>}
    */
 
-  async getAllStations (parameters) {
+  async getAllStations (parameters?: any) {
     const data = await this._request( {
       path: '/reisinformatie-api/api/v2/stations',
       parameters,
@@ -121,7 +129,7 @@ module.exports = class NSAPI {
    * @return  {Promise<array>}
    */
 
-  async getArrivals ( parameters ) {
+  async getArrivals ( parameters: any ) {
     if ( parameters.dateTime && ! ( parameters.dateTime instanceof Date ) ) {
       parameters.dateTime = new Date( parameters.dateTime ).toString();
     }
@@ -159,7 +167,7 @@ module.exports = class NSAPI {
    * @return  {Promise<array>}
    */
 
-  async getDepartures ( parameters ) {
+  async getDepartures ( parameters: any ) {
     if ( parameters.dateTime && ! ( parameters.dateTime instanceof Date ) ) {
       parameters.dateTime = new Date( parameters.dateTime ).toISOString();
     }
@@ -183,7 +191,7 @@ module.exports = class NSAPI {
    * @return  {Promise<object>}
    */
 
-  async getDisruption ( parameters ) {
+  async getDisruption ( parameters: any ) {
     const type = parameters.type;
     const id = parameters.id;
 
@@ -206,7 +214,7 @@ module.exports = class NSAPI {
    * @return  {Promise<array>}
    */
 
-  async getDisruptions ( parameters = {} ) {
+  async getDisruptions ( parameters: any = {} ) {
     parameters.actual = parameters.actual === true ? 'true' : 'false';
 
     const data = await this._request( {
@@ -227,7 +235,7 @@ module.exports = class NSAPI {
    * @return  {Promise<object>}
    */
 
-  async getStationDisruption ( parameters ) {
+  async getStationDisruption ( parameters: any ) {
     const code = parameters.code;
 
     delete parameters.code;
@@ -275,7 +283,7 @@ module.exports = class NSAPI {
    * @return  {Promise<array>}
    */
 
-  async getTrips ( parameters ) {
+  async getTrips ( parameters: any ) {
     if ( parameters.dateTime && ! ( parameters.dateTime instanceof Date ) ) {
       parameters.dateTime = new Date( parameters.dateTime ).toISOString();
     }
@@ -296,7 +304,7 @@ module.exports = class NSAPI {
    * @return  {Promise<array>}
    */
 
-  async getPrice ( parameters ) {
+  async getPrice ( parameters: any ) {
     // YYYY-MM-DD
     if ( parameters.date && ! ( parameters.date instanceof Date ) ) {
       parameters.date = new Date( parameters.date ).toISOString().split( 'T' )[0];
@@ -318,7 +326,7 @@ module.exports = class NSAPI {
    * @return  {Promise<object>}
    */
 
-  async getJourney ( parameters ) {
+  async getJourney ( parameters: any ) {
     if ( parameters.dateTime && ! ( parameters.date instanceof Date ) ) {
       parameters.dateTime = new Date( parameters.dateTime ).toISOString();
     }
@@ -341,7 +349,7 @@ module.exports = class NSAPI {
    * @return  {Promise<array>}
    */
 
-  async placesList ( parameters ) {
+  async placesList ( parameters: any ) {
     const data = await this._request( {
       path: '/places-api/v2/places',
       parameters,
@@ -358,7 +366,7 @@ module.exports = class NSAPI {
    * @return  {Promise<array>}
    */
 
-  async placesOvfiets ( parameters ) {
+  async placesOvfiets ( parameters: any ) {
     const data = await this._request( {
       path: '/places-api/v2/ovfiets',
       parameters,
@@ -382,6 +390,10 @@ module.exports = class NSAPI {
     type,
     id,
     lang = '',
+  }: {
+    type: string,
+    id: string,
+    lang?: string,
   } ) {
     const data = await this._request( {
       path: `/places-api/v2/places/${type}/${id}`,

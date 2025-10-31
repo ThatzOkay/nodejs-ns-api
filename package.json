@@ -14,17 +14,37 @@
   "bugs": {
     "url": "https://github.com/fvdm/nodejs-ns-api/issues"
   },
-  "main": "nsapi.js",
-  "files": [
-    "example.js"
-  ],
-  "runkitExampleFilename": "example.js",
-  "scripts": {
-    "test": "dotest"
+  "type": "module",
+  "main": "./dist/nsapi.umd.js",
+  "module": "./dist/nsapi.esm.js",
+  "types": "./dist/nsapi.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/nsapi.d.ts",
+      "import": "./dist/nsapi.esm.js",
+      "require": "./dist/nsapi.umd.js"
+    }
   },
-  "dependencies": {},
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "vite": "vite",
+    "clean": "rimraf dist",
+    "build": "npm run clean && npm run build:lib && npm run build:tsc",
+    "build:lib": "vite build",
+    "build:tsc": "tsc --emitDeclarationOnly",
+    "test": "jest"
+  },
   "devDependencies": {
-    "dotest": "^2.10.0"
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.9.2",
+    "dotest": "^2.10.0",
+    "rimraf": "^6.1.0",
+    "ts-jest": "^29.4.5",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.12"
   },
   "engines": {
     "node": ">=18"
@@ -42,5 +62,8 @@
     "transport",
     "unlicense"
   ],
-  "license": "Unlicense"
+  "license": "Unlicense",
+  "dependencies": {
+    "dotenv": "^17.2.3"
+  }
 }
