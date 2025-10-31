@@ -4,15 +4,16 @@
     "email": "fr@nkl.in",
     "url": "https://frankl.in"
   },
-  "name": "ns-api",
-  "version": "4.1.2",
+  "private": false,
+  "name": "@thatzokay/ns-api",
+  "version": "4.2.0",
   "description": "Public transit data from Nederlandse Spoorwegen API",
   "repository": {
     "type": "git",
-    "url": "git://github.com/fvdm/nodejs-ns-api.git"
+    "url": "https://github.com/ThatzOkay/nodejs-ns-api.git"
   },
   "bugs": {
-    "url": "https://github.com/fvdm/nodejs-ns-api/issues"
+    "url": "https://github.com/ThatzOkay/nodejs-ns-api/issues"
   },
   "type": "module",
   "main": "./dist/nsapi.umd.js",
