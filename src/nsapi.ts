@@ -118,7 +118,7 @@ export default class NSAPI implements NSAPIInterface {
   async getAllStations(query?: string): Promise<NSStation[]> {
     const data = await this._request( {
       path: '/reisinformatie-api/api/v2/stations',
-      parameters: { query },
+      parameters: query ? { q: query } : undefined
     } );
 
     return data.payload;
@@ -177,7 +177,7 @@ export default class NSAPI implements NSAPIInterface {
 
     const data = await this._request( {
       path: '/reisinformatie-api/api/v2/departures',
-      parameters: { station, dateTime },
+      parameters: { lang: 'nl', station: station, dateTime: dateTime },
     } );
 
     return data.payload.departures;
