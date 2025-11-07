@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import NSAPI from '../src/nsapi.js';
+import { NSAPI } from '../src/nsapi';
 const ns = new NSAPI( {
   key: 'abc123',
 } );
