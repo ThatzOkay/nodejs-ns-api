@@ -10,7 +10,7 @@ import NSAPIInterface from './types/interface';
 import { NSDeparture } from './types/nsDeparture';
 import { NSStation } from './types/nsStation';
 
-export default class NSAPI implements NSAPIInterface {
+export class NSAPI implements NSAPIInterface {
 
   /**
    * Configuration
