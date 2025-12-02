@@ -53,9 +53,19 @@ export class NSAPI implements NSAPIInterface {
    * @return  {Promise<object>}
    */
 
-  async _request(options: { path: string; parameters?: Record<string, any> }): Promise<any> {
+  async _request(options: { path: string; parameters?: Record<string, any | undefined> }): Promise<any> {
     let url = `https://gateway.apiportal.ns.nl${options.path}`;
-    const params = new URLSearchParams(options.parameters as any);
+
+    const filteredParams: Record<string, any> = {};
+    if (options.parameters) {
+      for (const [key, value] of Object.entries(options.parameters)) {
+        if (value !== undefined) {
+          filteredParams[key] = value;
+        }
+      }
+    }
+
+    const params = new URLSearchParams(filteredParams as any);
 
     url += '?' + params.toString();
 
@@ -116,12 +126,16 @@ export class NSAPI implements NSAPIInterface {
    */
 
   async getAllStations(query?: string): Promise<NSStation[]> {
-    const data = await this._request( {
+    try {
+      const data = await this._request( {
       path: '/reisinformatie-api/api/v2/stations',
       parameters: query ? { q: query } : undefined
-    } );
+      } );
 
-    return data.payload;
+      return data.payload;
+    } catch (e) {
+      throw e;
+    }
   }
 
 
@@ -171,16 +185,20 @@ export class NSAPI implements NSAPIInterface {
    */
 
   async getDepartures(station: string, dateTime: Date | string): Promise<NSDeparture[]> {
-    if (dateTime && !(dateTime instanceof Date)) {
+    try {
+      if (dateTime && !(dateTime instanceof Date)) {
       dateTime = new Date(dateTime).toISOString();
-    }
+      }
 
-    const data = await this._request( {
+      const data = await this._request( {
       path: '/reisinformatie-api/api/v2/departures',
       parameters: { lang: 'nl', station: station, dateTime: dateTime },
-    } );
+      } );
 
-    return data.payload.departures;
+      return data.payload.departures;
+    } catch (e) {
+      throw e;
+    }
   }
 
 
@@ -407,5 +425,4 @@ export class NSAPI implements NSAPIInterface {
 
     return data.payload;
   }
-
 };
